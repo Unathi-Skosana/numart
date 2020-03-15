@@ -98,9 +98,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="Read digits from data file.")
     parser.add_argument("dat", nargs=1, type=str, help="name of file")
+    parser.add_argument("edges", nargs=1, type=int, help="Put edges between \
+                        adjacent digits")
     args = parser.parse_args()
 
     dat = args.dat[0]
+    edges = bool(args.edges[0])
     digits = read_digits(dat)
     r, c = np.shape(digits)
 
@@ -111,25 +114,27 @@ if __name__ == '__main__':
     color_list, dcmap = discrete_cmap(n, "terrain")
 
     # initialize figure
-    fig, axes = plt.subplots(figsize=(r//2, c//2))
+    fig, axes = plt.subplots(figsize=(r/10, c/10))
 
-    for i in range(n):
-        labeled, ncomponents, indices = find_connected_components(
-            digits, i)
-        for j in range(1, ncomponents+1):
-            v = indices[labeled == j]
-            # optimize
-            for k in range(len(v)):
-                nn = np.array(neighbours_of(v[k][0], v[k][1]))
-                for item in v:
-                    dist = (item[0] - v[k][0])**2 + (item[1] - v[k][1])**2
-                    if item in nn and (dist == 1 or dist == 2):
-                        # flip x and y
-                        axes.arrow(item[1], item[0], v[k][1] - item[1], v[k][0]
-                                   - item[0], edgecolor=color_list[i])
+    if edges:
+        for i in range(n):
+            labeled, ncomponents, indices = find_connected_components(
+                digits, i)
+            for j in range(1, ncomponents+1):
+                v = indices[labeled == j]
+                # optimize
+                for k in range(len(v)):
+                    nn = np.array(neighbours_of(v[k][0], v[k][1]))
+                    for item in v:
+                        dist = (item[0] - v[k][0])**2 + (item[1] - v[k][1])**2
+                        if item in nn and (dist == 1 or dist == 2):
+                            # flip x and y
+                            axes.arrow(item[1], item[0], v[k][1] - item[1], v[k][0]
+                                       - item[0], edgecolor=color_list[i],
+                                       head_width=0)
 
     # flip y and x
-    scat = axes.scatter(y, x, c=digits[x, y], s=50,
+    scat = axes.scatter(y, x, c=digits[x, y], s=1,
                         cmap=dcmap)
 
     # Shrink current axis's height by 10% on the bottom
@@ -139,11 +144,19 @@ if __name__ == '__main__':
 
     # produce a legend with the unique colors from the scatter
     legend1 = axes.legend(*scat.legend_elements(), loc='upper center',
-                          bbox_to_anchor=(0.5, -0.05), fancybox=True,
-                          shadow=True, ncol=n, columnspacing=1.0)
+                          bbox_to_anchor=(0.5, -0.05), ncol=n, fontsize=2,
+                          labelspacing=0.5, markerscale=0.1, fancybox=True,
+                          shadow=True, frameon=False)
     axes.add_artist(legend1)
     axes.axis('off')
 
+    # file name
+    fn = ''
+    if edges:
+        fn = 'images/pi_{}_by_{}_edges.png'.format(r, c)
+    else:
+        fn = 'images/pi_{}_by_{}.png'.format(r, c)
+
     # save figure
-    fig.savefig('images/pi_{}_by_{}.png'.format(r, c), format='png', dpi=900,
+    fig.savefig(fn, format='png', dpi=1200,
                 quality=100, pad_inches=0.0)

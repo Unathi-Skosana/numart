@@ -52,6 +52,6 @@ if __name__ == '__main__':
     digits = [[digits[r*cols + c] for c in range(cols)] for r in range(rows)]
 
     # digits to .dat file to reuse
-    with open('pi_{}_by_{}.dat'.format(rows, cols), 'w', newline='') as file:
+    with open('data/pi_{}_by_{}.dat'.format(rows, cols), 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerows(digits)
