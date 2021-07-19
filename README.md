@@ -2,13 +2,13 @@
 
 <h1 align="center">
   <br>
-  <img src="./images/phi_71_by_71_edges.png" alt="numart phi" width="300">
+  <img src="./images/phi_50_by_100_edges.png" alt="numart phi" width="300">
   <br>
   <br>
-  <img src="./images/pi_71_by_71_edges.png" alt="numart pi" width="300">
+  <img src="./images/pi_50_by_100_edges.png" alt="numart pi" width="300">
   <br>
   <br>
-  <img src="./images/e_71_by_71_edges.png" alt="numart e" width="300">
+  <img src="./images/e_50_by_100_edges.png" alt="numart e" width="300">
   <br>
 </h1>
 
