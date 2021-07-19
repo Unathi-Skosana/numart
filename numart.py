@@ -7,10 +7,11 @@ import scipy.ndimage as ndimage
 
 from copy import deepcopy
 from matplotlib import rc
+from matplotlib.figure import figaspect
 
 # Aesthetics
-rc('font', **{'family': 'monospace',
-              'serif': ['DejaVu Sans Mono']})
+rc('font', **{'family': 'sans-serif',
+              'sans-serif': ['Inter var']})
 rc('text', usetex=True)
 plt.style.use('dark_background')
 
@@ -84,7 +85,7 @@ def find_connected_components(digits, digit):
     structure = np.ones((3, 3), dtype=np.int)
     fil_digits_copy = filter_isolated_cells(bool_mask, structure)
     labels, nids = ndimage.label(fil_digits_copy, structure)
-    indices = np.indices(fil_digits_copy.shape).T[:, :, [1, 0]]
+    indices = np.indices(fil_digits_copy.T.shape).T[:, :, [1, 0]]
 
     return labels, nids, indices
 
@@ -124,7 +125,7 @@ if __name__ == '__main__':
     color_list, dcmap = discrete_cmap(n, "terrain")
 
     # initialize figure
-    fig, axes = plt.subplots(figsize=(r/10, c/10))
+    fig, axes = plt.subplots(figsize=(8, 4))
 
     if edges:
         for i in range(n):
@@ -144,21 +145,20 @@ if __name__ == '__main__':
                                        head_width=0)
 
     # flip y and x
-    scat = axes.scatter(y, x, c=digits[x, y], s=1,
+    scat = axes.scatter(y, x, c=digits[x, y], s=3,
                         cmap=dcmap)
 
     # Shrink current axis's height by 10% on the bottom
-    box = axes.get_position()
-    axes.set_position([box.x0, box.y0 + box.height * 0.1,
-                       box.width, box.height * 0.9])
+    #box = axes.get_position()
+    #axes.set_position([box.x0, box.y0 + box.height * 0.1,
+    #                   box.width, box.height * 0.9])
 
     # produce a legend with the unique colors from the scatter
     # one should fiddle with this
-    legend1 = axes.legend(*scat.legend_elements(), loc='upper center',
-                          bbox_to_anchor=(0.5, -0.05), ncol=n, fontsize=2,
-                          labelspacing=0.5, markerscale=0.1, fancybox=True,
-                          shadow=True, frameon=False)
-    axes.add_artist(legend1)
+    #legend1 = axes.legend(*scat.legend_elements(), loc='upper center',
+    #                      bbox_to_anchor=(0.5, 1.1), ncol=n, fontsize=4.5,
+    #                      markerscale=.5, frameon=False)
+    #axes.add_artist(legend1)
     axes.axis('off')
 
     # file name
@@ -169,5 +169,4 @@ if __name__ == '__main__':
         fn = 'images/{}_{}_by_{}.png'.format(num, r, c)
 
     # save figure
-    fig.savefig(fn, format='png', dpi=1200,
-                quality=100, pad_inches=0.0)
+    fig.savefig(fn, format='png', dpi=300, bbox_inches="tight", pad_inches=0)
